@@ -1,28 +1,19 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
-import psycopg2
+from sqlalchemy import create_engine
 
 # Load CSV data into DataFrame
 events_data = pd.read_csv('eventseattle.csv')
 
 # Establish a connection to the PostgreSQL database
-connection = psycopg2.connect(
-    user="xbmqnounao",
-    password="12D177O375IC8KO7$",
-    host="ankit25-lab5-redo-server.postgres.database.azure.com",
-    port=5432,
-    database="ankit25-lab5-redo-database"
-)
+engine = create_engine('postgresql://xbmqnounao:12D177O375IC8KO7$@ankit25-lab5-redo-server.postgres.database.azure.com:5432/ankit25-lab5-redo-database')
+
 # Insert data into the PostgreSQL database
-events_data.to_sql('events_table', connection, index=False, if_exists='replace')
-
-
+events_data.to_sql('events_table', engine, index=False, if_exists='replace')
 
 # Load data from PostgreSQL
 query = "SELECT * FROM events_table"
-events_data = pd.read_sql(query, connection)
+events_data = pd.read_sql(query, engine)
 
 # Features
 
@@ -36,7 +27,7 @@ st.bar_chart(category_counts)
 
 # Chart 2: Events per month
 st.subheader("Events Per Month")
-events_data['Date'] = pd.to_datetime(events_data['Date'])
+events_data['Date'] = pd.to_datetime(events_data['Date'], errors='coerce')
 events_data['Month'] = events_data['Date'].dt.month
 monthly_counts = events_data['Month'].value_counts().sort_index()
 st.line_chart(monthly_counts)
@@ -71,4 +62,4 @@ st.write("Filtered Data:")
 st.table(filtered_data)
 
 # Close the database connection
-connection.close()
+engine.dispose()

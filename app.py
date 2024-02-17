@@ -6,8 +6,8 @@ from sqlalchemy import create_engine
 events_data = pd.read_csv('eventseattle.csv')
 
 # Establish a connection to the PostgreSQL database
-engine = create_engine('postgresql://xbmqnounao:12D177O375IC8KO7$@ankit25-lab5-redo-server.postgres.database.azure.com:5432/ankit25-lab5-redo-database')
-
+AZURE_POSTGRESQL_CONNECTIONSTRING = "postgresql://xbmqnounao:12D177O375IC8KO7$@ankit25-lab5-redo-server.postgres.database.azure.com:5432/ankit25-lab5-redo-database"
+engine = create_engine(AZURE_POSTGRESQL_CONNECTIONSTRING)
 # Insert data into the PostgreSQL database
 events_data.to_sql('events_table', engine, index=False, if_exists='replace')
 

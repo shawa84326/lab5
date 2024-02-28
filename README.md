@@ -1,1 +1,1 @@
-## Run python app.pt
+## Run python app.py
